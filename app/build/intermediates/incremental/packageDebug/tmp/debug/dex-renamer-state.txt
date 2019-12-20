@@ -1,0 +1,4 @@
+#Sun Dec 08 23:24:12 CST 2019
+base.0=/Users/mfl/Downloads/FIFO/RFIDReader/app/build/intermediates/dex/debug/mergeDexDebug/out
+path.0=classes.dex
+renamed.0=classes.dex
