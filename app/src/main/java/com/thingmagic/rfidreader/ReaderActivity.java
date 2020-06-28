@@ -1,9 +1,6 @@
 package com.thingmagic.rfidreader;
 
-import java.util.ArrayList;
-import java.util.Set;
-
-import android.R.layout;
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -14,18 +11,15 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import com.thingmagic.Reader;
 import com.thingmagic.rfidreader.Listener.ConnectionListener;
 import com.thingmagic.rfidreader.Listener.ReaderSearchListener;
@@ -36,6 +30,10 @@ import com.thingmagic.rfidreader.services.UsbService;
 import com.thingmagic.util.GlobalExceptionHandler;
 import com.thingmagic.util.LoggerUtil;
 import com.thingmagic.util.Utilities;
+import com.zhy.m.permission.MPermissions;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 
 
@@ -57,7 +55,7 @@ public class ReaderActivity extends Activity
 	private static Button copy = null;
 	private static Button settingsButton = null;
 	private static Button homeButton = null ;
-	private static Spinner serialList=null;	
+	private static Spinner serialList=null;
 	private static Display display=null;
 	private static TextView searchResultCount = null;
 	private static TextView rowNumberLabelView = null;
@@ -74,7 +72,7 @@ public class ReaderActivity extends Activity
 	public View firmware;
 
 	public ExpandableListAdapter expandableListAdapter;
-	
+
 	/**
      * The flag indicating whether content is loaded (text is shown) or not (setting view is
      * shown).
@@ -84,24 +82,29 @@ public class ReaderActivity extends Activity
     private View mDisplayView;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) 
+	public void onCreate(Bundle savedInstanceState)
 	{
 		try{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_reader);
-		
+
 		mSettingView = findViewById(R.id.settings);
 		mDisplayView = findViewById(R.id.displayView);
 
         // Initially hide the setting view.
         mSettingView.setVisibility(View.GONE);
-     
+
+//			MPermissions.requestPermissions(getParent(),100,
+//					Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//					Manifest.permission.READ_EXTERNAL_STORAGE
+//			);
+
 		activity=this;
-		try 
+		try
 		{
 			Utilities.loadLog4j(this);
-		} 
-		catch (Exception ex) 
+		}
+		catch (Exception ex)
 		{
 			LoggerUtil.error(TAG, "Error loading log4j", ex);
 		}
@@ -110,19 +113,19 @@ public class ReaderActivity extends Activity
 		serialReaderRadioButton.setOnClickListener(readerRadioButtonListener);
 		networkReaderRadioButton.setOnClickListener(readerRadioButtonListener);
 		customReaderRadioButton.setOnClickListener(readerRadioButtonListener);
-		
+
 		readEditText.setDrawableClickListener(new ReaderSearchListener(this));
 
 
 		connectButton.setOnClickListener(new ConnectionListener(this));
-		
+
 		syncReadRadioButton.setOnClickListener(serviceRadioButtonListener);
 		asyncReadSearchRadioButton.setOnClickListener(serviceRadioButtonListener);
-		
+
 		loadSettingConntentView();
-				
+
 		readButton.setOnClickListener(new ServiceListener(this));
-		
+
 		readEditText.setOnFocusChangeListener(new Utilities.DftTextOnFocusListener(
 				getString(R.string.Read)));
 		searchResultCount.setText("");
@@ -130,7 +133,7 @@ public class ReaderActivity extends Activity
 		copy.setOnClickListener(new ServiceListener(this).copyListener);
 		down.setOnClickListener(new ServiceListener(this).downListener);
 
-		settingsButton.setOnClickListener(new OnClickListener() {			
+		settingsButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 			  mContentLoaded = !mContentLoaded;
@@ -166,15 +169,15 @@ public class ReaderActivity extends Activity
 
 		// Set this blank adapter to the list view
 		expandableList.setAdapter(expandableListAdapter);
-		homeButton.setOnClickListener(new OnClickListener() {			
+		homeButton.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View view) {				
+			public void onClick(View view) {
 				mContentLoaded = !mContentLoaded;
 	            showSettingsOrTagsView(mContentLoaded);
 			}
 		});
 	}
-	
+
 	/**
      * Cross-fades between {@link #mSettingView} and {@link #mDisplayView}.
      */
@@ -188,7 +191,7 @@ public class ReaderActivity extends Activity
         showView.setVisibility(View.KEEP_SCREEN_ON);
         hideView.setVisibility(View.GONE);
     }
-	    
+
 	/**
 	 * This is called when the screen rotates.
 	 * (onCreate is no longer called when screen rotates due to manifest, see: android:configChanges)
@@ -200,12 +203,12 @@ public class ReaderActivity extends Activity
 	    int orientation = newConfig.orientation;
 	    if (orientation == Configuration.ORIENTATION_PORTRAIT){
 	    	setPortraitTableLayout();
-	    }        
+	    }
 	    else if (orientation == Configuration.ORIENTATION_LANDSCAPE){
 	    	setPortraitTableLayout();
-	    } 
+	    }
 	}
-	
+
 	private void setPortraitTableLayout()
 	{
 		rowNumberLabelView.setWidth((int) (windowWidth*(0.1)));
@@ -215,7 +218,7 @@ public class ReaderActivity extends Activity
 		epcDataWidth=(int) (windowWidth*(0.75));
 		epcCountWidth=(int) (windowWidth*(0.16));
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		String message = "";
@@ -230,7 +233,7 @@ public class ReaderActivity extends Activity
 			title = "Closing application";
 			message = "Are you sure you want to close this application?";
 		}
-			
+
 	    new AlertDialog.Builder(this)
 	        .setIcon(android.R.drawable.ic_dialog_alert)
 	        .setTitle(title)
@@ -241,7 +244,7 @@ public class ReaderActivity extends Activity
 	        public void onClick(DialogInterface dialog, int which) {
 	        	if(reader != null)
         		{
-	        		moveTaskToBack(true);	
+	        		moveTaskToBack(true);
         		}
 	        	else
 	        	{
@@ -254,8 +257,8 @@ public class ReaderActivity extends Activity
 	    .setCancelable(false)
 	    .show();
 	}
-		
-	private void findAllViewsById() 
+
+	private void findAllViewsById()
 	{
 		readEditText = (CustomEditText) findViewById(R.id.search_edit_text);
 		customReaderField = (CustomEditText) findViewById(R.id.custom_reader_field);
@@ -281,10 +284,11 @@ public class ReaderActivity extends Activity
 
 
 	private OnClickListener readerRadioButtonListener = new OnClickListener() {
-		public void onClick(View v) 
+		@SuppressLint("MissingPermission")
+		public void onClick(View v)
 		{
 			RadioButton radioButton = (RadioButton) v;
-			if (radioButton.getText().equals("SerialReader")) 
+			if (radioButton.getText().equals("SerialReader"))
 			{
 				try
 				{
@@ -296,11 +300,11 @@ public class ReaderActivity extends Activity
 					 ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 				        		activity,
 								android.R.layout.simple_spinner_dropdown_item);
-					if (btEnabled) 
+					if (btEnabled)
 					{
 						Set<BluetoothDevice> pairedDevices = bluetoothService
 								.getPairedDevices();
-						for (BluetoothDevice bluetoothDevice : pairedDevices) 
+						for (BluetoothDevice bluetoothDevice : pairedDevices)
 						{
 							adapter.add(bluetoothDevice.getName()+" \n "+bluetoothDevice.getAddress());
 						}
@@ -322,8 +326,8 @@ public class ReaderActivity extends Activity
 				{
 					LoggerUtil.error(TAG, "Error loading paired bluetooth devices :", ex);
 				}
-			} 
-			else if (radioButton.getText().equals("NetworkReader")) 
+			}
+			else if (radioButton.getText().equals("NetworkReader"))
 			{
 				serialList.setVisibility(View.GONE);
 				readEditText.setVisibility(View.VISIBLE);

@@ -32,7 +32,6 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
-        android:testOnly="true"
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.thingmagic.rfidreader.ReaderActivity"

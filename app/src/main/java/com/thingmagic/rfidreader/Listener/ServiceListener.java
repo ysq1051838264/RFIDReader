@@ -1,14 +1,7 @@
 package com.thingmagic.rfidreader.Listener;
 
-import java.io.File;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -27,16 +20,14 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.thingmagic.AndroidUSBTransport;
-import com.thingmagic.AndroidUsbReflection;
 import com.thingmagic.Gen2;
 import com.thingmagic.ReadExceptionListener;
 import com.thingmagic.ReadListener;
 import com.thingmagic.Reader;
 import com.thingmagic.ReaderException;
 import com.thingmagic.SimpleReadPlan;
-import com.thingmagic.TagData;
 import com.thingmagic.TagOp;
 import com.thingmagic.TagProtocol;
 import com.thingmagic.TagReadData;
@@ -47,6 +38,15 @@ import com.thingmagic.rfidreader.services.SettingsService;
 import com.thingmagic.util.ExcelUtils;
 import com.thingmagic.util.LoggerUtil;
 import com.thingmagic.util.Utilities;
+
+import java.io.File;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ServiceListener implements View.OnClickListener {
 
@@ -199,7 +199,7 @@ public class ServiceListener implements View.OnClickListener {
 //            file = new File(getSDPath() + "/Record");
 //            makeDir(file);
 
-            file= new File( Environment.getExternalStorageDirectory().getAbsolutePath() + "/1/record/");
+            file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/1/record/");
             if (!file.exists()) {
                 if (!file.mkdirs()) {
                     Log.e("ysq", "创建缓存目录失败");
@@ -256,10 +256,20 @@ public class ServiceListener implements View.OnClickListener {
         public void onClick(View v) {
             //复制
             Set<String> keySet = epcToReadDataMap.keySet();
+            StringBuilder sb = new StringBuilder("");
             for (String epcString : keySet) {
                 TagRecord tagRecordData = epcToReadDataMap.get(epcString);
-                Log.e("ysq", tagRecordData.getEpcString() + "    " + tagRecordData.getTid() + "\n");
+                String s = "    epc是:"+tagRecordData.getEpcString() + "    tid是:" + tagRecordData.getTid() + "\n";
+                Log.e("ysq", s);
+                sb.append(s);
             }
+
+            //获取剪贴板管理器：
+            ClipboardManager cm = (ClipboardManager) mReaderActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData mClipData = ClipData.newPlainText("Label", sb.toString());
+            cm.setPrimaryClip(mClipData);
+
+            Toast.makeText(v.getContext(), "复制成功，请去粘贴~", Toast.LENGTH_SHORT).show();
         }
     };
 

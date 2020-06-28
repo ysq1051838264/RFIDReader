@@ -24,4 +24,6 @@ dependencies {
     compile files('libs/ltkjava-1.0.0.6.jar')
     compile files('libs/mercuryapi.jar')
     compile files('libs/jxl.jar')
+    compile files('libs/permission-lib.jar')
+
 }
