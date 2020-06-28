@@ -1,5 +1,6 @@
 package com.thingmagic.rfidreader.Listener;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Set;
@@ -10,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,6 +44,7 @@ import com.thingmagic.rfidreader.R;
 import com.thingmagic.rfidreader.ReaderActivity;
 import com.thingmagic.rfidreader.TagRecord;
 import com.thingmagic.rfidreader.services.SettingsService;
+import com.thingmagic.util.ExcelUtils;
 import com.thingmagic.util.LoggerUtil;
 import com.thingmagic.util.Utilities;
 
@@ -186,19 +189,77 @@ public class ServiceListener implements View.OnClickListener {
         }
     };
 
+    private File file;
+    private String fileName;
+    private static String[] title = {"次数", "epc", "tid"};
     public OnClickListener downListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             //下载
+//            file = new File(getSDPath() + "/Record");
+//            makeDir(file);
 
+            file= new File( Environment.getExternalStorageDirectory().getAbsolutePath() + "/1/record/");
+            if (!file.exists()) {
+                if (!file.mkdirs()) {
+                    Log.e("ysq", "创建缓存目录失败");
+                }
+            }
+
+            ExcelUtils.initExcel(file.toString() + "/tid.xls", title);
+            fileName = file.toString() + "/tid.xls";
+            ExcelUtils.writeObjListToExcel(getRecordData(), fileName, v.getContext());
         }
     };
+
+    private ArrayList<ArrayList<String>> getRecordData() {
+        ArrayList<ArrayList<String>> recordList = new ArrayList<>();
+        Set<String> keySet = epcToReadDataMap.keySet();
+        for (String epcString : keySet) {
+            TagRecord tagRecordData = epcToReadDataMap.get(epcString);
+            ArrayList<String> beanList = new ArrayList<String>();
+            beanList.add(tagRecordData.getReadCount() + "");
+            beanList.add(tagRecordData.getEpcString());
+            beanList.add(tagRecordData.getTid());
+            recordList.add(beanList);
+        }
+        return recordList;
+    }
+
+    private String getSDPath() {
+        File sdDir = null;
+        boolean sdCardExist = Environment.getExternalStorageState().equals(
+                android.os.Environment.MEDIA_MOUNTED);
+        if (sdCardExist) {
+            sdDir = Environment.getExternalStorageDirectory();
+        }
+        String dir = sdDir.toString();
+        return dir;
+    }
+
+    public void makeDir(File dir) {
+//        File dirPath = new File(Environment.getExternalStorageDirectory() + "/jpark/image/evaluate/");
+        if (!dir.exists()) {
+            if (!dir.mkdirs()) {
+                Log.e("ysq", "创建图片缓存目录失败");
+            }
+        }
+
+//        if (!dir.getParentFile().exists()) {
+//            makeDir(dir.getParentFile());
+//        }
+//        dir.mkdir();
+    }
 
     public OnClickListener copyListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             //复制
-
+            Set<String> keySet = epcToReadDataMap.keySet();
+            for (String epcString : keySet) {
+                TagRecord tagRecordData = epcToReadDataMap.get(epcString);
+                Log.e("ysq", tagRecordData.getEpcString() + "    " + tagRecordData.getTid() + "\n");
+            }
         }
     };
 
@@ -422,8 +483,9 @@ public class ServiceListener implements View.OnClickListener {
 
             totalTagCount += tr.getReadCount();
             String epcString = tr.getTag().epcString();
+            String tidString = tidString(tr.getData());
 
-            Log.e("ysq得到tid是：", tidString(tr.getData()));
+            Log.e("ysq得到tid是：", tidString);
             Log.e("ysq得到epc是：", epcString);
 //
             if (epcToReadDataMap.keySet().contains(epcString)) {
@@ -433,6 +495,7 @@ public class ServiceListener implements View.OnClickListener {
                 TagRecord tagRecord = new TagRecord();
                 tagRecord.setEpcString(epcString);
                 tagRecord.setReadCount(tr.getReadCount());
+                tagRecord.setTid(tidString);
                 epcToReadDataMap.put(epcString, tagRecord);
             }
         }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import android.R.layout;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
@@ -38,7 +39,7 @@ import com.thingmagic.util.Utilities;
 
 
 
-public class ReaderActivity extends Activity 
+public class ReaderActivity extends Activity
 {
 
 	private static final String TAG = "ReaderActivity";
@@ -81,7 +82,7 @@ public class ReaderActivity extends Activity
     private boolean mContentLoaded;
     private View mSettingView;
     private View mDisplayView;
-    
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{
@@ -177,7 +178,8 @@ public class ReaderActivity extends Activity
 	/**
      * Cross-fades between {@link #mSettingView} and {@link #mDisplayView}.
      */
-    private void showSettingsOrTagsView(boolean contentLoaded) {
+    @SuppressLint("WrongConstant")
+	private void showSettingsOrTagsView(boolean contentLoaded) {
         // Decide which view to hide and which to show.
         final View showView = contentLoaded ? mSettingView : mDisplayView;
         final View hideView = contentLoaded ? mDisplayView : mSettingView;

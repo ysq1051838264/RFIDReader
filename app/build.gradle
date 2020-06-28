@@ -23,4 +23,5 @@ dependencies {
     compile files('libs/jmdns-3.4.1.jar')
     compile files('libs/ltkjava-1.0.0.6.jar')
     compile files('libs/mercuryapi.jar')
+    compile files('libs/jxl.jar')
 }

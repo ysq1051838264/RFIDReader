@@ -1,12 +1,12 @@
 package com.thingmagic.rfidreader;
 
-public class TagRecord {
+import java.util.Arrays;
 
-    int antenna = 0;
+public class TagRecord {
     public int readCount = 0;
-    int rssi = 0;
-    int frequency = 0;
     String epcString;
+    String tid;
+
     byte[] data = new byte[0];
 
     public byte[] getData() {
@@ -17,14 +17,6 @@ public class TagRecord {
         this.data = data;
     }
 
-    public int getAntenna() {
-        return antenna;
-    }
-
-    public void setAntenna(int antenna) {
-        this.antenna = antenna;
-    }
-
     public int getReadCount() {
         return readCount;
     }
@@ -33,27 +25,28 @@ public class TagRecord {
         this.readCount = readCount;
     }
 
-    public int getRssi() {
-        return rssi;
-    }
-
-    public void setRssi(int rssi) {
-        this.rssi = rssi;
-    }
-
-    public int getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
-    }
-
     public String getEpcString() {
         return epcString;
     }
 
     public void setEpcString(String epcString) {
         this.epcString = epcString;
+    }
+
+    public String getTid() {
+        return tid;
+    }
+
+    public void setTid(String tid) {
+        this.tid = tid;
+    }
+
+    @Override
+    public String toString() {
+        return "TagRecord{" +
+                "readCount=" + readCount +
+                ", epcString='" + epcString + '\'' +
+                ", tid='" + tid + '\'' +
+                '}';
     }
 }
