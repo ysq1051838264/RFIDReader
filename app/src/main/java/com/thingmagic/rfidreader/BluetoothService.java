@@ -32,10 +32,10 @@ public class BluetoothService {
 //			if (!btAdapter.isEnabled()) {	
 //				enabled = false;
 //				// Prompt user to turn on Bluetooth
-//				Intent enableBtIntent = new Intent(
-//						BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//				activity.startActivityForResult(enableBtIntent,
-//						REQUEST_ENABLE_BT);
+				Intent enableBtIntent = new Intent(
+						BluetoothAdapter.ACTION_REQUEST_ENABLE);
+				activity.startActivityForResult(enableBtIntent,
+						REQUEST_ENABLE_BT);
 //			}
 //			if (btAdapter.isEnabled()) {
 //				enabled = true;

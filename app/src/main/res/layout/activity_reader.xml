@@ -205,6 +205,24 @@
                                 android:visibility="invisible" />
 
                             <Button
+                                android:id="@+id/down"
+                                style="?android:attr/buttonStyleInset"
+                                android:layout_width="wrap_content"
+                                android:layout_height="45dp"
+                                android:layout_weight="0.05"
+                                android:paddingRight="10dp"
+                                android:text="下载" />
+
+                            <Button
+                                android:id="@+id/copy"
+                                style="?android:attr/buttonStyleInset"
+                                android:layout_width="wrap_content"
+                                android:layout_height="45dp"
+                                android:layout_weight="0.05"
+                                android:paddingRight="10dp"
+                                android:text="复制" />
+
+                            <Button
                                 android:id="@+id/Clear"
                                 style="?android:attr/buttonStyleInset"
                                 android:layout_width="wrap_content"

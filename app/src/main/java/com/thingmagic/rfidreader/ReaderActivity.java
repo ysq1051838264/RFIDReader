@@ -52,6 +52,8 @@ public class ReaderActivity extends Activity
 	private static Button connectButton = null;
 	private static Button readButton = null;
 	private static Button clearButton = null;
+	private static Button down = null;
+	private static Button copy = null;
 	private static Button settingsButton = null;
 	private static Button homeButton = null ;
 	private static Spinner serialList=null;	
@@ -124,7 +126,9 @@ public class ReaderActivity extends Activity
 				getString(R.string.Read)));
 		searchResultCount.setText("");
 		clearButton.setOnClickListener(new ServiceListener(this).clearListener);
-		
+		copy.setOnClickListener(new ServiceListener(this).copyListener);
+		down.setOnClickListener(new ServiceListener(this).downListener);
+
 		settingsButton.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View view) {
@@ -263,6 +267,8 @@ public class ReaderActivity extends Activity
 		searchResultCount = (TextView) findViewById(R.id.search_result_view);
 		serialList = (Spinner) findViewById(R.id.SerialList);
 		clearButton = (Button) findViewById(R.id.Clear);
+		copy = (Button) findViewById(R.id.copy);
+		down = (Button) findViewById(R.id.down);
 		settingsButton =(Button) findViewById(R.id.settings_view);
 		display = ((android.view.WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 		rowNumberLabelView = (TextView) findViewById(R.id.SNOLabel);

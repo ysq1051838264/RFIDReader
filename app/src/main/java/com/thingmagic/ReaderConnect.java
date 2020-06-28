@@ -13,11 +13,11 @@ public class ReaderConnect {
 			r.addTransportListener(r.simpleTransportListener);
 		}
 	}
-	
-	public static Reader connect(String uriString) throws Exception 
+
+	public static Reader connect(String uriString) throws Exception
 	{
 		Reader reader = null;
-		try 
+		try
 		{
 			reader = Reader.create(uriString);
 			reader.connect();
@@ -27,12 +27,12 @@ public class ReaderConnect {
 			{
 				Reader.Region[] supportedRegions = (Reader.Region[]) reader
 						.paramGet(TMConstants.TMR_PARAM_REGION_SUPPORTEDREGIONS);
-				if (supportedRegions.length < 1) 
+				if (supportedRegions.length < 1)
 				{
 					throw new Exception(
 							"Reader doesn't support any regions");
-				} 
-				else 
+				}
+				else
 				{
 					reader.paramSet("/reader/region/id", supportedRegions[0]);
 				}
